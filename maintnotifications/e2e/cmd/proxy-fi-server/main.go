@@ -28,7 +28,6 @@ func main() {
 	fmt.Printf("Proxy Fault Injector Server started successfully\n")
 	fmt.Printf("Fault Injector API available at http://%s\n", *listenAddr)
 
-	// Wait for interrupt signal
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 	<-sigChan

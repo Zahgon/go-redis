@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -18,9 +17,6 @@ var cntErrors atomic.Int64
 var cntSuccess atomic.Int64
 var startTime = time.Now()
 
-// This example is not supposed to be run as is. It is just a test to see how pubsub behaves in relation to pool management.
-// It was used to find regressions in pool management in maintnotifications mode.
-// Please don't use it as a reference for how to use pubsub.
 func main() {
 	startTime = time.Now()
 	wg := &sync.WaitGroup{}
@@ -120,56 +116,11 @@ func main() {
 }
 
 func floodThePool(ctx context.Context, rdb *redis.Client, wg *sync.WaitGroup) {
-	defer wg.Done()
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		default:
-		}
-		err := rdb.Publish(ctx, "test2", "hello").Err()
-		if err != nil {
-			if err.Error() != "context canceled" {
-				log.Println("publish error:", err)
-				cntErrors.Add(1)
-			}
-		}
-
-		err = rdb.Incr(ctx, "published").Err()
-		if err != nil {
-			if err.Error() != "context canceled" {
-				log.Println("incr error:", err)
-				cntErrors.Add(1)
-			}
-		}
-		time.Sleep(10 * time.Nanosecond)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func subscribe(ctx context.Context, rdb *redis.Client, topic string, subscriberId int, wg *sync.WaitGroup) {
-	defer wg.Done()
-	rec := rdb.Subscribe(ctx, topic)
-	recChan := rec.Channel()
-	for {
-		select {
-		case <-ctx.Done():
-			rec.Close()
-			return
-		default:
-			select {
-			case <-ctx.Done():
-				rec.Close()
-				return
-			case msg := <-recChan:
-				err := rdb.Incr(ctx, "received").Err()
-				if err != nil {
-					if err.Error() != "context canceled" {
-						log.Printf("%s\n", err.Error())
-						cntErrors.Add(1)
-					}
-				}
-				_ = msg // Use the message to avoid unused variable warning
-			}
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }

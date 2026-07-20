@@ -1,23 +1,15 @@
 package redisotel
 
 import (
-	"strings"
-
 	"github.com/redis/go-redis/v9"
-	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
-	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 	"go.opentelemetry.io/otel/trace"
 )
 
 type config struct {
-	// Common options.
-
 	dbSystem string
 	attrs    []attribute.KeyValue
-
-	// Tracing options.
 
 	tp     trace.TracerProvider
 	tracer trace.Tracer
@@ -27,8 +19,6 @@ type config struct {
 	filterDial            bool
 	filterProcessPipeline func(cmds []redis.Cmder) bool
 	filterProcess         func(cmd redis.Cmder) bool
-
-	// Metrics options.
 
 	mp    metric.MeterProvider
 	meter metric.Meter
@@ -50,63 +40,22 @@ type Option interface {
 
 type option func(conf *config)
 
-func (fn option) apply(conf *config) {
-	fn(conf)
-}
+func (fn option) apply(conf *config) { _ = "STUB: not implemented"; return }
 
-func (fn option) tracing() {}
+func (fn option) tracing() { _ = "STUB: not implemented"; return }
 
-func (fn option) metrics() {}
+func (fn option) metrics() { _ = "STUB: not implemented"; return }
 
-func newConfig(opts ...baseOption) *config {
-	conf := &config{
-		dbSystem: "redis",
-		attrs:    []attribute.KeyValue{},
+func newConfig(opts ...baseOption) *config { _ = "STUB: not implemented"; return nil }
 
-		tp:            otel.GetTracerProvider(),
-		mp:            otel.GetMeterProvider(),
-		dbStmtEnabled: true,
-		callerEnabled: true,
-		filterProcess: DefaultCommandFilter,
-		filterProcessPipeline: func(cmds []redis.Cmder) bool {
-			for _, cmd := range cmds {
-				if DefaultCommandFilter(cmd) {
-					return true
-				}
-			}
-			return false
-		},
-	}
+func WithDBSystem(dbSystem string) Option { _ = "STUB: not implemented"; return *new(Option) }
 
-	for _, opt := range opts {
-		opt.apply(conf)
-	}
-
-	conf.attrs = append(conf.attrs, semconv.DBSystemKey.String(conf.dbSystem))
-
-	return conf
-}
-
-func WithDBSystem(dbSystem string) Option {
-	return option(func(conf *config) {
-		conf.dbSystem = dbSystem
-	})
-}
-
-// WithAttributes specifies additional attributes to be added to the span.
 func WithAttributes(attrs ...attribute.KeyValue) Option {
-	return option(func(conf *config) {
-		conf.attrs = append(conf.attrs, attrs...)
-	})
+	_ = "STUB: not implemented"
+	return *new(Option)
 }
 
-func WithPoolName(poolName string) Option {
-	return option(func(conf *config) {
-		conf.poolName = poolName
-	})
-}
-
-//------------------------------------------------------------------------------
+func WithPoolName(poolName string) Option { _ = "STUB: not implemented"; return *new(Option) }
 
 type TracingOption interface {
 	baseOption
@@ -117,89 +66,37 @@ type tracingOption func(conf *config)
 
 var _ TracingOption = (*tracingOption)(nil)
 
-func (fn tracingOption) apply(conf *config) {
-	fn(conf)
-}
+func (fn tracingOption) apply(conf *config) { _ = "STUB: not implemented"; return }
 
-func (fn tracingOption) tracing() {}
+func (fn tracingOption) tracing() { _ = "STUB: not implemented"; return }
 
-// WithTracerProvider specifies a tracer provider to use for creating a tracer.
-// If none is specified, the global provider is used.
 func WithTracerProvider(provider trace.TracerProvider) TracingOption {
-	return tracingOption(func(conf *config) {
-		conf.tp = provider
-	})
+	_ = "STUB: not implemented"
+	return *new(TracingOption)
 }
 
-// WithDBStatement tells the tracing hook to log raw redis commands.
-func WithDBStatement(on bool) TracingOption {
-	return tracingOption(func(conf *config) {
-		conf.dbStmtEnabled = on
-	})
-}
+func WithDBStatement(on bool) TracingOption { _ = "STUB: not implemented"; return *new(TracingOption) }
 
-// WithCallerEnabled tells the tracing hook to log the calling function, file and line.
 func WithCallerEnabled(on bool) TracingOption {
-	return tracingOption(func(conf *config) {
-		conf.callerEnabled = on
-	})
+	_ = "STUB: not implemented"
+	return *new(TracingOption)
 }
 
-// WithCommandFilter allows filtering of commands when tracing to omit commands that may have sensitive details like
-// passwords.
 func WithCommandFilter(filter func(cmd redis.Cmder) bool) TracingOption {
-	return tracingOption(func(conf *config) {
-		conf.filterProcess = filter
-	})
+	_ = "STUB: not implemented"
+	return *new(TracingOption)
 }
 
-// WithCommandsFilter allows filtering of pipeline commands
-// when tracing to omit commands that may have sensitive details like
-// passwords in a pipeline.
 func WithCommandsFilter(filter func(cmds []redis.Cmder) bool) TracingOption {
-	return tracingOption(func(conf *config) {
-		conf.filterProcessPipeline = filter
-	})
+	_ = "STUB: not implemented"
+	return *new(TracingOption)
 }
 
-// WithDialFilter enables or disables filtering of dial commands.
-func WithDialFilter(on bool) TracingOption {
-	return tracingOption(func(conf *config) {
-		conf.filterDial = on
-	})
-}
+func WithDialFilter(on bool) TracingOption { _ = "STUB: not implemented"; return *new(TracingOption) }
 
-// DefaultCommandFilter filters out AUTH commands from tracing.
-func DefaultCommandFilter(cmd redis.Cmder) bool {
-	if strings.ToLower(cmd.Name()) == "auth" {
-		return true
-	}
+func DefaultCommandFilter(cmd redis.Cmder) bool { _ = "STUB: not implemented"; return false }
 
-	if strings.ToLower(cmd.Name()) == "hello" {
-		if len(cmd.Args()) < 3 {
-			return false
-		}
-
-		arg, exists := cmd.Args()[2].(string)
-		if !exists {
-			return false
-		}
-
-		if strings.ToLower(arg) == "auth" {
-			return true
-		}
-	}
-
-	return false
-}
-
-// BasicCommandFilter filters out AUTH commands from tracing.
-// Deprecated: use DefaultCommandFilter instead.
-func BasicCommandFilter(cmd redis.Cmder) bool {
-	return DefaultCommandFilter(cmd)
-}
-
-//------------------------------------------------------------------------------
+func BasicCommandFilter(cmd redis.Cmder) bool { _ = "STUB: not implemented"; return false }
 
 type MetricsOption interface {
 	baseOption
@@ -210,21 +107,16 @@ type metricsOption func(conf *config)
 
 var _ MetricsOption = (*metricsOption)(nil)
 
-func (fn metricsOption) apply(conf *config) {
-	fn(conf)
-}
+func (fn metricsOption) apply(conf *config) { _ = "STUB: not implemented"; return }
 
-func (fn metricsOption) metrics() {}
+func (fn metricsOption) metrics() { _ = "STUB: not implemented"; return }
 
-// WithMeterProvider configures a metric.Meter used to create instruments.
 func WithMeterProvider(mp metric.MeterProvider) MetricsOption {
-	return metricsOption(func(conf *config) {
-		conf.mp = mp
-	})
+	_ = "STUB: not implemented"
+	return *new(MetricsOption)
 }
 
 func WithCloseChan(closeChan chan struct{}) MetricsOption {
-	return metricsOption(func(conf *config) {
-		conf.closeChan = closeChan
-	})
+	_ = "STUB: not implemented"
+	return *new(MetricsOption)
 }

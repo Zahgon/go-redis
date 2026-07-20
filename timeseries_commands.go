@@ -3,11 +3,8 @@ package redis
 import (
 	"context"
 	"errors"
-	"fmt"
-	"strings"
 
 	"github.com/redis/go-redis/v9/internal/proto"
-	"github.com/redis/go-redis/v9/internal/util"
 )
 
 type TimeseriesCmdable interface {
@@ -103,44 +100,7 @@ const (
 	CountAll
 )
 
-func (a Aggregator) String() string {
-	switch a {
-	case Invalid:
-		return ""
-	case Avg:
-		return "AVG"
-	case Sum:
-		return "SUM"
-	case Min:
-		return "MIN"
-	case Max:
-		return "MAX"
-	case Range:
-		return "RANGE"
-	case Count:
-		return "COUNT"
-	case First:
-		return "FIRST"
-	case Last:
-		return "LAST"
-	case StdP:
-		return "STD.P"
-	case StdS:
-		return "STD.S"
-	case VarP:
-		return "VAR.P"
-	case VarS:
-		return "VAR.S"
-	case Twa:
-		return "TWA"
-	case CountNaN:
-		return "COUNTNAN"
-	case CountAll:
-		return "COUNTALL"
-	default:
-		return ""
-	}
-}
+func (a Aggregator) String() string { _ = "STUB: not implemented"; return "" }
 
 var (
 	errTSMultiAggregationGroupBy = errors.New("redis: GROUPBY is not allowed when multiple aggregators are specified")
@@ -148,41 +108,13 @@ var (
 )
 
 func formatAggregationArgs(aggregator Aggregator, aggregators []Aggregator) (string, int, error) {
-	if aggregator != Invalid && len(aggregators) > 0 {
-		return "", 0, errTSAggregationConflict
-	}
-	if len(aggregators) == 0 {
-		if aggregator == Invalid {
-			return "", 0, nil
-		}
-		aggregationArg, err := formatAggregatorArg(aggregator)
-		if err != nil {
-			return "", 0, err
-		}
-		return aggregationArg, 1, nil
-	}
-
-	parts := make([]string, len(aggregators))
-	for i, agg := range aggregators {
-		if agg == Invalid {
-			return "", 0, fmt.Errorf("redis: invalid timeseries aggregator at index %d: Invalid (%d)", i, agg)
-		}
-		aggregationArg, err := formatAggregatorArg(agg)
-		if err != nil {
-			return "", 0, fmt.Errorf("redis: invalid timeseries aggregator at index %d: %d", i, agg)
-		}
-		parts[i] = aggregationArg
-	}
-
-	return strings.Join(parts, ","), len(parts), nil
+	_ = "STUB: not implemented"
+	return "", 0, nil
 }
 
 func formatAggregatorArg(aggregator Aggregator) (string, error) {
-	aggregationArg := aggregator.String()
-	if aggregationArg == "" {
-		return "", fmt.Errorf("redis: invalid timeseries aggregator: %d", aggregator)
-	}
-	return aggregationArg, nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 type TSRangeOptions struct {
@@ -191,7 +123,7 @@ type TSRangeOptions struct {
 	FilterByValue []int
 	Count         int
 	Align         interface{}
-	// Deprecated: use Aggregators instead.
+
 	Aggregator      Aggregator
 	Aggregators     []Aggregator
 	BucketDuration  int
@@ -205,7 +137,7 @@ type TSRevRangeOptions struct {
 	FilterByValue []int
 	Count         int
 	Align         interface{}
-	// Deprecated: use Aggregators instead.
+
 	Aggregator      Aggregator
 	Aggregators     []Aggregator
 	BucketDuration  int
@@ -221,7 +153,7 @@ type TSMRangeOptions struct {
 	SelectedLabels []interface{}
 	Count          int
 	Align          interface{}
-	// Deprecated: use Aggregators instead.
+
 	Aggregator      Aggregator
 	Aggregators     []Aggregator
 	BucketDuration  int
@@ -239,7 +171,7 @@ type TSMRevRangeOptions struct {
 	SelectedLabels []interface{}
 	Count          int
 	Align          interface{}
-	// Deprecated: use Aggregators instead.
+
 	Aggregator      Aggregator
 	Aggregators     []Aggregator
 	BucketDuration  int
@@ -255,283 +187,79 @@ type TSMGetOptions struct {
 	SelectedLabels []interface{}
 }
 
-// TSAdd - Adds one or more observations to a t-digest sketch.
-// For more information - https://redis.io/commands/ts.add/
 func (c cmdable) TSAdd(ctx context.Context, key string, timestamp interface{}, value float64) *IntCmd {
-	args := []interface{}{"TS.ADD", key, timestamp, value}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSAddWithArgs - Adds one or more observations to a t-digest sketch.
-// This function also allows for specifying additional options such as:
-// Retention, ChunkSize, Encoding, DuplicatePolicy and Labels.
-// For more information - https://redis.io/commands/ts.add/
 func (c cmdable) TSAddWithArgs(ctx context.Context, key string, timestamp interface{}, value float64, options *TSOptions) *IntCmd {
-	args := []interface{}{"TS.ADD", key, timestamp, value}
-	if options != nil {
-		if options.Retention != 0 {
-			args = append(args, "RETENTION", options.Retention)
-		}
-		if options.ChunkSize != 0 {
-			args = append(args, "CHUNK_SIZE", options.ChunkSize)
-		}
-		if options.Encoding != "" {
-			args = append(args, "ENCODING", options.Encoding)
-		}
-
-		if options.DuplicatePolicy != "" {
-			args = append(args, "DUPLICATE_POLICY", options.DuplicatePolicy)
-		}
-		if options.Labels != nil {
-			args = append(args, "LABELS")
-			for label, value := range options.Labels {
-				args = append(args, label, value)
-			}
-		}
-		if options.IgnoreMaxTimeDiff != 0 || options.IgnoreMaxValDiff != 0 {
-			args = append(args, "IGNORE", options.IgnoreMaxTimeDiff, options.IgnoreMaxValDiff)
-		}
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSCreate - Creates a new time-series key.
-// For more information - https://redis.io/commands/ts.create/
 func (c cmdable) TSCreate(ctx context.Context, key string) *StatusCmd {
-	args := []interface{}{"TS.CREATE", key}
-	cmd := NewStatusCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSCreateWithArgs - Creates a new time-series key with additional options.
-// This function allows for specifying additional options such as:
-// Retention, ChunkSize, Encoding, DuplicatePolicy and Labels.
-// For more information - https://redis.io/commands/ts.create/
 func (c cmdable) TSCreateWithArgs(ctx context.Context, key string, options *TSOptions) *StatusCmd {
-	args := []interface{}{"TS.CREATE", key}
-	if options != nil {
-		if options.Retention != 0 {
-			args = append(args, "RETENTION", options.Retention)
-		}
-		if options.ChunkSize != 0 {
-			args = append(args, "CHUNK_SIZE", options.ChunkSize)
-		}
-		if options.Encoding != "" {
-			args = append(args, "ENCODING", options.Encoding)
-		}
-
-		if options.DuplicatePolicy != "" {
-			args = append(args, "DUPLICATE_POLICY", options.DuplicatePolicy)
-		}
-		if options.Labels != nil {
-			args = append(args, "LABELS")
-			for label, value := range options.Labels {
-				args = append(args, label, value)
-			}
-		}
-		if options.IgnoreMaxTimeDiff != 0 || options.IgnoreMaxValDiff != 0 {
-			args = append(args, "IGNORE", options.IgnoreMaxTimeDiff, options.IgnoreMaxValDiff)
-		}
-	}
-	cmd := NewStatusCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSAlter - Alters an existing time-series key with additional options.
-// This function allows for specifying additional options such as:
-// Retention, ChunkSize and DuplicatePolicy.
-// For more information - https://redis.io/commands/ts.alter/
 func (c cmdable) TSAlter(ctx context.Context, key string, options *TSAlterOptions) *StatusCmd {
-	args := []interface{}{"TS.ALTER", key}
-	if options != nil {
-		if options.Retention != 0 {
-			args = append(args, "RETENTION", options.Retention)
-		}
-		if options.ChunkSize != 0 {
-			args = append(args, "CHUNK_SIZE", options.ChunkSize)
-		}
-		if options.DuplicatePolicy != "" {
-			args = append(args, "DUPLICATE_POLICY", options.DuplicatePolicy)
-		}
-		if options.Labels != nil {
-			args = append(args, "LABELS")
-			for label, value := range options.Labels {
-				args = append(args, label, value)
-			}
-		}
-		if options.IgnoreMaxTimeDiff != 0 || options.IgnoreMaxValDiff != 0 {
-			args = append(args, "IGNORE", options.IgnoreMaxTimeDiff, options.IgnoreMaxValDiff)
-		}
-	}
-	cmd := NewStatusCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSCreateRule - Creates a compaction rule from sourceKey to destKey.
-// For more information - https://redis.io/commands/ts.createrule/
 func (c cmdable) TSCreateRule(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, bucketDuration int) *StatusCmd {
-	args := []interface{}{"TS.CREATERULE", sourceKey, destKey, "AGGREGATION", aggregator.String(), bucketDuration}
-	cmd := NewStatusCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSCreateRuleWithArgs - Creates a compaction rule from sourceKey to destKey with additional option.
-// This function allows for specifying additional option such as:
-// alignTimestamp.
-// For more information - https://redis.io/commands/ts.createrule/
 func (c cmdable) TSCreateRuleWithArgs(ctx context.Context, sourceKey string, destKey string, aggregator Aggregator, bucketDuration int, options *TSCreateRuleOptions) *StatusCmd {
-	args := []interface{}{"TS.CREATERULE", sourceKey, destKey, "AGGREGATION", aggregator.String(), bucketDuration}
-	if options != nil {
-		if options.alignTimestamp != 0 {
-			args = append(args, options.alignTimestamp)
-		}
-	}
-	cmd := NewStatusCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSIncrBy - Increments the value of a time-series key by the specified timestamp.
-// For more information - https://redis.io/commands/ts.incrby/
 func (c cmdable) TSIncrBy(ctx context.Context, Key string, timestamp float64) *IntCmd {
-	args := []interface{}{"TS.INCRBY", Key, timestamp}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSIncrByWithArgs - Increments the value of a time-series key by the specified timestamp with additional options.
-// This function allows for specifying additional options such as:
-// Timestamp, Retention, ChunkSize, Uncompressed and Labels.
-// For more information - https://redis.io/commands/ts.incrby/
 func (c cmdable) TSIncrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd {
-	args := []interface{}{"TS.INCRBY", key, timestamp}
-	if options != nil {
-		if options.Timestamp != 0 {
-			args = append(args, "TIMESTAMP", options.Timestamp)
-		}
-		if options.Retention != 0 {
-			args = append(args, "RETENTION", options.Retention)
-		}
-		if options.ChunkSize != 0 {
-			args = append(args, "CHUNK_SIZE", options.ChunkSize)
-		}
-		if options.Uncompressed {
-			args = append(args, "UNCOMPRESSED")
-		}
-		if options.DuplicatePolicy != "" {
-			args = append(args, "DUPLICATE_POLICY", options.DuplicatePolicy)
-		}
-		if options.Labels != nil {
-			args = append(args, "LABELS")
-			for label, value := range options.Labels {
-				args = append(args, label, value)
-			}
-		}
-		if options.IgnoreMaxTimeDiff != 0 || options.IgnoreMaxValDiff != 0 {
-			args = append(args, "IGNORE", options.IgnoreMaxTimeDiff, options.IgnoreMaxValDiff)
-		}
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSDecrBy - Decrements the value of a time-series key by the specified timestamp.
-// For more information - https://redis.io/commands/ts.decrby/
 func (c cmdable) TSDecrBy(ctx context.Context, Key string, timestamp float64) *IntCmd {
-	args := []interface{}{"TS.DECRBY", Key, timestamp}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSDecrByWithArgs - Decrements the value of a time-series key by the specified timestamp with additional options.
-// This function allows for specifying additional options such as:
-// Timestamp, Retention, ChunkSize, Uncompressed and Labels.
-// For more information - https://redis.io/commands/ts.decrby/
 func (c cmdable) TSDecrByWithArgs(ctx context.Context, key string, timestamp float64, options *TSIncrDecrOptions) *IntCmd {
-	args := []interface{}{"TS.DECRBY", key, timestamp}
-	if options != nil {
-		if options.Timestamp != 0 {
-			args = append(args, "TIMESTAMP", options.Timestamp)
-		}
-		if options.Retention != 0 {
-			args = append(args, "RETENTION", options.Retention)
-		}
-		if options.ChunkSize != 0 {
-			args = append(args, "CHUNK_SIZE", options.ChunkSize)
-		}
-		if options.Uncompressed {
-			args = append(args, "UNCOMPRESSED")
-		}
-		if options.DuplicatePolicy != "" {
-			args = append(args, "DUPLICATE_POLICY", options.DuplicatePolicy)
-		}
-		if options.Labels != nil {
-			args = append(args, "LABELS")
-			for label, value := range options.Labels {
-				args = append(args, label, value)
-			}
-		}
-		if options.IgnoreMaxTimeDiff != 0 || options.IgnoreMaxValDiff != 0 {
-			args = append(args, "IGNORE", options.IgnoreMaxTimeDiff, options.IgnoreMaxValDiff)
-		}
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSDel - Deletes a range of samples from a time-series key.
-// For more information - https://redis.io/commands/ts.del/
 func (c cmdable) TSDel(ctx context.Context, Key string, fromTimestamp int, toTimestamp int) *IntCmd {
-	args := []interface{}{"TS.DEL", Key, fromTimestamp, toTimestamp}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSDeleteRule - Deletes a compaction rule from sourceKey to destKey.
-// For more information - https://redis.io/commands/ts.deleterule/
 func (c cmdable) TSDeleteRule(ctx context.Context, sourceKey string, destKey string) *StatusCmd {
-	args := []interface{}{"TS.DELETERULE", sourceKey, destKey}
-	cmd := NewStatusCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSGetWithArgs - Gets the last sample of a time-series key with additional option.
-// This function allows for specifying additional option such as:
-// Latest.
-// For more information - https://redis.io/commands/ts.get/
 func (c cmdable) TSGetWithArgs(ctx context.Context, key string, options *TSGetOptions) *TSTimestampValueCmd {
-	args := []interface{}{"TS.GET", key}
-	if options != nil {
-		if options.Latest {
-			args = append(args, "LATEST")
-		}
-	}
-	cmd := newTSTimestampValueCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSGet - Gets the last sample of a time-series key.
-// For more information - https://redis.io/commands/ts.get/
 func (c cmdable) TSGet(ctx context.Context, key string) *TSTimestampValueCmd {
-	args := []interface{}{"TS.GET", key}
-	cmd := newTSTimestampValueCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type TSTimestampValue struct {
@@ -540,12 +268,7 @@ type TSTimestampValue struct {
 	Values    []float64
 }
 
-func (tv TSTimestampValue) String() string {
-	if len(tv.Values) > 0 {
-		return fmt.Sprintf("{%d %v}", tv.Timestamp, tv.Values)
-	}
-	return fmt.Sprintf("{%d %v}", tv.Timestamp, tv.Value)
-}
+func (tv TSTimestampValue) String() string { _ = "STUB: not implemented"; return "" }
 
 type TSTimestampValueCmd struct {
 	baseCmd
@@ -553,241 +276,69 @@ type TSTimestampValueCmd struct {
 }
 
 func newTSTimestampValueCmd(ctx context.Context, args ...interface{}) *TSTimestampValueCmd {
-	return &TSTimestampValueCmd{
-		baseCmd: baseCmd{
-			ctx:     ctx,
-			args:    args,
-			cmdType: CmdTypeTSTimestampValue,
-		},
-	}
-}
-
-func (cmd *TSTimestampValueCmd) String() string {
-	return cmdString(cmd, cmd.val)
-}
-
-func (cmd *TSTimestampValueCmd) SetVal(val TSTimestampValue) {
-	cmd.val = val
-}
-
-func (cmd *TSTimestampValueCmd) Result() (TSTimestampValue, error) {
-	return cmd.val, cmd.err
-}
-
-func (cmd *TSTimestampValueCmd) Val() TSTimestampValue {
-	return cmd.val
-}
-
-func (cmd *TSTimestampValueCmd) readReply(rd *proto.Reader) (err error) {
-	n, err := rd.ReadMapLen()
-	if err != nil {
-		return err
-	}
-	cmd.val = TSTimestampValue{}
-	for i := 0; i < n; i++ {
-		timestamp, err := rd.ReadInt()
-		if err != nil {
-			return err
-		}
-		value, err := rd.ReadString()
-		if err != nil {
-			return err
-		}
-		cmd.val.Timestamp = timestamp
-		cmd.val.Value, err = util.ParseStringToFloat(value)
-		if err != nil {
-			return err
-		}
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (cmd *TSTimestampValueCmd) Clone() Cmder {
-	val := cmd.val
-	if cmd.val.Values != nil {
-		val.Values = make([]float64, len(cmd.val.Values))
-		copy(val.Values, cmd.val.Values)
-	}
-	return &TSTimestampValueCmd{
-		baseCmd: cmd.cloneBaseCmd(),
-		val:     val,
-	}
+func (cmd *TSTimestampValueCmd) String() string { _ = "STUB: not implemented"; return "" }
+
+func (cmd *TSTimestampValueCmd) SetVal(val TSTimestampValue) { _ = "STUB: not implemented"; return }
+
+func (cmd *TSTimestampValueCmd) Result() (TSTimestampValue, error) {
+	_ = "STUB: not implemented"
+	return *new(TSTimestampValue), nil
 }
 
-// TSInfo - Returns information about a time-series key.
-// For more information - https://redis.io/commands/ts.info/
+func (cmd *TSTimestampValueCmd) Val() TSTimestampValue {
+	_ = "STUB: not implemented"
+	return *new(TSTimestampValue)
+}
+
+func (cmd *TSTimestampValueCmd) readReply(rd *proto.Reader) (err error) {
+	_ = "STUB: not implemented"
+	return nil
+}
+
+func (cmd *TSTimestampValueCmd) Clone() Cmder { _ = "STUB: not implemented"; return *new(Cmder) }
+
 func (c cmdable) TSInfo(ctx context.Context, key string) *MapStringInterfaceCmd {
-	args := []interface{}{"TS.INFO", key}
-	cmd := NewMapStringInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSInfoWithArgs - Returns information about a time-series key with additional option.
-// This function allows for specifying additional option such as:
-// Debug.
-// For more information - https://redis.io/commands/ts.info/
 func (c cmdable) TSInfoWithArgs(ctx context.Context, key string, options *TSInfoOptions) *MapStringInterfaceCmd {
-	args := []interface{}{"TS.INFO", key}
-	if options != nil {
-		if options.Debug {
-			args = append(args, "DEBUG")
-		}
-	}
-	cmd := NewMapStringInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSMAdd - Adds multiple samples to multiple time-series keys.
-// It accepts a slice of 'ktv' slices, each containing exactly three elements: key, timestamp, and value.
-// This struct must be provided for this command to work.
-// For more information - https://redis.io/commands/ts.madd/
 func (c cmdable) TSMAdd(ctx context.Context, ktvSlices [][]interface{}) *IntSliceCmd {
-	args := []interface{}{"TS.MADD"}
-	for _, ktv := range ktvSlices {
-		args = append(args, ktv...)
-	}
-	cmd := NewIntSliceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSQueryIndex - Returns all the keys matching the filter expression.
-// For more information - https://redis.io/commands/ts.queryindex/
 func (c cmdable) TSQueryIndex(ctx context.Context, filterExpr []string) *StringSliceCmd {
-	args := []interface{}{"TS.QUERYINDEX"}
-	for _, f := range filterExpr {
-		args = append(args, f)
-	}
-	cmd := NewStringSliceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSRevRange - Returns a range of samples from a time-series key in reverse order.
-// For more information - https://redis.io/commands/ts.revrange/
 func (c cmdable) TSRevRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd {
-	args := []interface{}{"TS.REVRANGE", key, fromTimestamp, toTimestamp}
-	cmd := newTSTimestampValueSliceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSRevRangeWithArgs - Returns a range of samples from a time-series key in reverse order with additional options.
-// This function allows for specifying additional options such as:
-// Latest, FilterByTS, FilterByValue, Count, Align, Aggregator,
-// BucketDuration, BucketTimestamp and Empty.
-// For more information - https://redis.io/commands/ts.revrange/
 func (c cmdable) TSRevRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, options *TSRevRangeOptions) *TSTimestampValueSliceCmd {
-	args := []interface{}{"TS.REVRANGE", key, fromTimestamp, toTimestamp}
-	if options != nil {
-		if options.Latest {
-			args = append(args, "LATEST")
-		}
-		if options.FilterByTS != nil {
-			args = append(args, "FILTER_BY_TS")
-			for _, f := range options.FilterByTS {
-				args = append(args, f)
-			}
-		}
-		if options.FilterByValue != nil {
-			args = append(args, "FILTER_BY_VALUE")
-			for _, f := range options.FilterByValue {
-				args = append(args, f)
-			}
-		}
-		if options.Count != 0 {
-			args = append(args, "COUNT", options.Count)
-		}
-		if options.Align != nil {
-			args = append(args, "ALIGN", options.Align)
-		}
-		aggregationArg, _, err := formatAggregationArgs(options.Aggregator, options.Aggregators)
-		if err != nil {
-			cmd := newTSTimestampValueSliceCmd(ctx, args...)
-			cmd.SetErr(err)
-			return cmd
-		}
-		if aggregationArg != "" {
-			args = append(args, "AGGREGATION", aggregationArg)
-		}
-		if options.BucketDuration != 0 {
-			args = append(args, options.BucketDuration)
-		}
-		if options.BucketTimestamp != nil {
-			args = append(args, "BUCKETTIMESTAMP", options.BucketTimestamp)
-		}
-		if options.Empty {
-			args = append(args, "EMPTY")
-		}
-	}
-	cmd := newTSTimestampValueSliceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSRange - Returns a range of samples from a time-series key.
-// For more information - https://redis.io/commands/ts.range/
 func (c cmdable) TSRange(ctx context.Context, key string, fromTimestamp int, toTimestamp int) *TSTimestampValueSliceCmd {
-	args := []interface{}{"TS.RANGE", key, fromTimestamp, toTimestamp}
-	cmd := newTSTimestampValueSliceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSRangeWithArgs - Returns a range of samples from a time-series key with additional options.
-// This function allows for specifying additional options such as:
-// Latest, FilterByTS, FilterByValue, Count, Align, Aggregator,
-// BucketDuration, BucketTimestamp and Empty.
-// For more information - https://redis.io/commands/ts.range/
 func (c cmdable) TSRangeWithArgs(ctx context.Context, key string, fromTimestamp int, toTimestamp int, options *TSRangeOptions) *TSTimestampValueSliceCmd {
-	args := []interface{}{"TS.RANGE", key, fromTimestamp, toTimestamp}
-	if options != nil {
-		if options.Latest {
-			args = append(args, "LATEST")
-		}
-		if options.FilterByTS != nil {
-			args = append(args, "FILTER_BY_TS")
-			for _, f := range options.FilterByTS {
-				args = append(args, f)
-			}
-		}
-		if options.FilterByValue != nil {
-			args = append(args, "FILTER_BY_VALUE")
-			for _, f := range options.FilterByValue {
-				args = append(args, f)
-			}
-		}
-		if options.Count != 0 {
-			args = append(args, "COUNT", options.Count)
-		}
-		if options.Align != nil {
-			args = append(args, "ALIGN", options.Align)
-		}
-		aggregationArg, _, err := formatAggregationArgs(options.Aggregator, options.Aggregators)
-		if err != nil {
-			cmd := newTSTimestampValueSliceCmd(ctx, args...)
-			cmd.SetErr(err)
-			return cmd
-		}
-		if aggregationArg != "" {
-			args = append(args, "AGGREGATION", aggregationArg)
-		}
-		if options.BucketDuration != 0 {
-			args = append(args, options.BucketDuration)
-		}
-		if options.BucketTimestamp != nil {
-			args = append(args, "BUCKETTIMESTAMP", options.BucketTimestamp)
-		}
-		if options.Empty {
-			args = append(args, "EMPTY")
-		}
-	}
-	cmd := newTSTimestampValueSliceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type TSTimestampValueSliceCmd struct {
@@ -796,313 +347,60 @@ type TSTimestampValueSliceCmd struct {
 }
 
 func newTSTimestampValueSliceCmd(ctx context.Context, args ...interface{}) *TSTimestampValueSliceCmd {
-	return &TSTimestampValueSliceCmd{
-		baseCmd: baseCmd{
-			ctx:     ctx,
-			args:    args,
-			cmdType: CmdTypeTSTimestampValueSlice,
-		},
-	}
-}
-
-func (cmd *TSTimestampValueSliceCmd) String() string {
-	return cmdString(cmd, cmd.val)
-}
-
-func (cmd *TSTimestampValueSliceCmd) SetVal(val []TSTimestampValue) {
-	cmd.val = val
-}
-
-func (cmd *TSTimestampValueSliceCmd) Result() ([]TSTimestampValue, error) {
-	return cmd.val, cmd.err
-}
-
-func (cmd *TSTimestampValueSliceCmd) Val() []TSTimestampValue {
-	return cmd.val
-}
-
-func (cmd *TSTimestampValueSliceCmd) readReply(rd *proto.Reader) (err error) {
-	n, err := rd.ReadArrayLen()
-	if err != nil {
-		return err
-	}
-	cmd.val = make([]TSTimestampValue, n)
-	for i := 0; i < n; i++ {
-		itemLen, err := rd.ReadArrayLen()
-		if err != nil {
-			return err
-		}
-
-		timestamp, err := rd.ReadInt()
-		if err != nil {
-			return err
-		}
-		cmd.val[i].Timestamp = timestamp
-		if itemLen == 2 {
-			value, err := rd.ReadString()
-			if err != nil {
-				return err
-			}
-			cmd.val[i].Value, err = util.ParseStringToFloat(value)
-			if err != nil {
-				return err
-			}
-			continue
-		}
-
-		cmd.val[i].Values = make([]float64, itemLen-1)
-		for j := 0; j < itemLen-1; j++ {
-			value, err := rd.ReadString()
-			if err != nil {
-				return err
-			}
-			cmd.val[i].Values[j], err = util.ParseStringToFloat(value)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (cmd *TSTimestampValueSliceCmd) Clone() Cmder {
-	var val []TSTimestampValue
-	if cmd.val != nil {
-		val = make([]TSTimestampValue, len(cmd.val))
-		copy(val, cmd.val)
-		for i := range cmd.val {
-			if cmd.val[i].Values != nil {
-				val[i].Values = make([]float64, len(cmd.val[i].Values))
-				copy(val[i].Values, cmd.val[i].Values)
-			}
-		}
-	}
-	return &TSTimestampValueSliceCmd{
-		baseCmd: cmd.cloneBaseCmd(),
-		val:     val,
-	}
+func (cmd *TSTimestampValueSliceCmd) String() string { _ = "STUB: not implemented"; return "" }
+
+func (cmd *TSTimestampValueSliceCmd) SetVal(val []TSTimestampValue) {
+	_ = "STUB: not implemented"
+	return
 }
 
-// TSMRange - Returns a range of samples from multiple time-series keys.
-// For more information - https://redis.io/commands/ts.mrange/
+func (cmd *TSTimestampValueSliceCmd) Result() ([]TSTimestampValue, error) {
+	_ = "STUB: not implemented"
+	return nil, nil
+}
+
+func (cmd *TSTimestampValueSliceCmd) Val() []TSTimestampValue {
+	_ = "STUB: not implemented"
+	return nil
+}
+
+func (cmd *TSTimestampValueSliceCmd) readReply(rd *proto.Reader) (err error) {
+	_ = "STUB: not implemented"
+	return nil
+}
+
+func (cmd *TSTimestampValueSliceCmd) Clone() Cmder { _ = "STUB: not implemented"; return *new(Cmder) }
+
 func (c cmdable) TSMRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd {
-	args := []interface{}{"TS.MRANGE", fromTimestamp, toTimestamp, "FILTER"}
-	for _, f := range filterExpr {
-		args = append(args, f)
-	}
-	cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSMRangeWithArgs - Returns a range of samples from multiple time-series keys with additional options.
-// This function allows for specifying additional options such as:
-// Latest, FilterByTS, FilterByValue, WithLabels, SelectedLabels,
-// Count, Align, Aggregator, BucketDuration, BucketTimestamp,
-// Empty, GroupByLabel and Reducer.
-// For more information - https://redis.io/commands/ts.mrange/
 func (c cmdable) TSMRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, options *TSMRangeOptions) *MapStringSliceInterfaceCmd {
-	args := []interface{}{"TS.MRANGE", fromTimestamp, toTimestamp}
-	multiAggregationCount := 0
-	if options != nil {
-		if options.Latest {
-			args = append(args, "LATEST")
-		}
-		if options.FilterByTS != nil {
-			args = append(args, "FILTER_BY_TS")
-			for _, f := range options.FilterByTS {
-				args = append(args, f)
-			}
-		}
-		if options.FilterByValue != nil {
-			args = append(args, "FILTER_BY_VALUE")
-			for _, f := range options.FilterByValue {
-				args = append(args, f)
-			}
-		}
-		if options.WithLabels {
-			args = append(args, "WITHLABELS")
-		}
-		if options.SelectedLabels != nil {
-			args = append(args, "SELECTED_LABELS")
-			args = append(args, options.SelectedLabels...)
-		}
-		if options.Count != 0 {
-			args = append(args, "COUNT", options.Count)
-		}
-		if options.Align != nil {
-			args = append(args, "ALIGN", options.Align)
-		}
-		aggregationArg, count, err := formatAggregationArgs(options.Aggregator, options.Aggregators)
-		if err != nil {
-			cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-			cmd.SetErr(err)
-			return cmd
-		}
-		multiAggregationCount = count
-		if aggregationArg != "" {
-			args = append(args, "AGGREGATION", aggregationArg)
-		}
-		if options.BucketDuration != 0 {
-			args = append(args, options.BucketDuration)
-		}
-		if options.BucketTimestamp != nil {
-			args = append(args, "BUCKETTIMESTAMP", options.BucketTimestamp)
-		}
-		if options.Empty {
-			args = append(args, "EMPTY")
-		}
-	}
-	args = append(args, "FILTER")
-	for _, f := range filterExpr {
-		args = append(args, f)
-	}
-	if options != nil {
-		if multiAggregationCount > 1 && (options.GroupByLabel != nil || options.Reducer != nil) {
-			cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-			cmd.SetErr(errTSMultiAggregationGroupBy)
-			return cmd
-		}
-		if options.GroupByLabel != nil {
-			args = append(args, "GROUPBY", options.GroupByLabel)
-		}
-		if options.Reducer != nil {
-			args = append(args, "REDUCE", options.Reducer)
-		}
-	}
-	cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSMRevRange - Returns a range of samples from multiple time-series keys in reverse order.
-// For more information - https://redis.io/commands/ts.mrevrange/
 func (c cmdable) TSMRevRange(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string) *MapStringSliceInterfaceCmd {
-	args := []interface{}{"TS.MREVRANGE", fromTimestamp, toTimestamp, "FILTER"}
-	for _, f := range filterExpr {
-		args = append(args, f)
-	}
-	cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSMRevRangeWithArgs - Returns a range of samples from multiple time-series keys in reverse order with additional options.
-// This function allows for specifying additional options such as:
-// Latest, FilterByTS, FilterByValue, WithLabels, SelectedLabels,
-// Count, Align, Aggregator, BucketDuration, BucketTimestamp,
-// Empty, GroupByLabel and Reducer.
-// For more information - https://redis.io/commands/ts.mrevrange/
 func (c cmdable) TSMRevRangeWithArgs(ctx context.Context, fromTimestamp int, toTimestamp int, filterExpr []string, options *TSMRevRangeOptions) *MapStringSliceInterfaceCmd {
-	args := []interface{}{"TS.MREVRANGE", fromTimestamp, toTimestamp}
-	multiAggregationCount := 0
-	if options != nil {
-		if options.Latest {
-			args = append(args, "LATEST")
-		}
-		if options.FilterByTS != nil {
-			args = append(args, "FILTER_BY_TS")
-			for _, f := range options.FilterByTS {
-				args = append(args, f)
-			}
-		}
-		if options.FilterByValue != nil {
-			args = append(args, "FILTER_BY_VALUE")
-			for _, f := range options.FilterByValue {
-				args = append(args, f)
-			}
-		}
-		if options.WithLabels {
-			args = append(args, "WITHLABELS")
-		}
-		if options.SelectedLabels != nil {
-			args = append(args, "SELECTED_LABELS")
-			args = append(args, options.SelectedLabels...)
-		}
-		if options.Count != 0 {
-			args = append(args, "COUNT", options.Count)
-		}
-		if options.Align != nil {
-			args = append(args, "ALIGN", options.Align)
-		}
-		aggregationArg, count, err := formatAggregationArgs(options.Aggregator, options.Aggregators)
-		if err != nil {
-			cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-			cmd.SetErr(err)
-			return cmd
-		}
-		multiAggregationCount = count
-		if aggregationArg != "" {
-			args = append(args, "AGGREGATION", aggregationArg)
-		}
-		if options.BucketDuration != 0 {
-			args = append(args, options.BucketDuration)
-		}
-		if options.BucketTimestamp != nil {
-			args = append(args, "BUCKETTIMESTAMP", options.BucketTimestamp)
-		}
-		if options.Empty {
-			args = append(args, "EMPTY")
-		}
-	}
-	args = append(args, "FILTER")
-	for _, f := range filterExpr {
-		args = append(args, f)
-	}
-	if options != nil {
-		if multiAggregationCount > 1 && (options.GroupByLabel != nil || options.Reducer != nil) {
-			cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-			cmd.SetErr(errTSMultiAggregationGroupBy)
-			return cmd
-		}
-		if options.GroupByLabel != nil {
-			args = append(args, "GROUPBY", options.GroupByLabel)
-		}
-		if options.Reducer != nil {
-			args = append(args, "REDUCE", options.Reducer)
-		}
-	}
-	cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSMGet - Returns the last sample of multiple time-series keys.
-// For more information - https://redis.io/commands/ts.mget/
 func (c cmdable) TSMGet(ctx context.Context, filters []string) *MapStringSliceInterfaceCmd {
-	args := []interface{}{"TS.MGET", "FILTER"}
-	for _, f := range filters {
-		args = append(args, f)
-	}
-	cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-// TSMGetWithArgs - Returns the last sample of multiple time-series keys with additional options.
-// This function allows for specifying additional options such as:
-// Latest, WithLabels and SelectedLabels.
-// For more information - https://redis.io/commands/ts.mget/
 func (c cmdable) TSMGetWithArgs(ctx context.Context, filters []string, options *TSMGetOptions) *MapStringSliceInterfaceCmd {
-	args := []interface{}{"TS.MGET"}
-	if options != nil {
-		if options.Latest {
-			args = append(args, "LATEST")
-		}
-		if options.WithLabels {
-			args = append(args, "WITHLABELS")
-		}
-		if options.SelectedLabels != nil {
-			args = append(args, "SELECTED_LABELS")
-			args = append(args, options.SelectedLabels...)
-		}
-	}
-	args = append(args, "FILTER")
-	for _, f := range filters {
-		args = append(args, f)
-	}
-	cmd := NewMapStringSliceInterfaceCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }

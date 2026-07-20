@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
-	"sync"
 	"time"
 
 	"go.opentelemetry.io/otel"
@@ -22,7 +20,7 @@ func main() {
 	ctx := context.Background()
 
 	uptrace.ConfigureOpentelemetry(
-		// copy your project DSN here or use UPTRACE_DSN env var
+
 		uptrace.WithDSN("http://project1_secret@localhost:14318/2?grpc=14317"),
 
 		uptrace.WithServiceName("myservice"),
@@ -59,34 +57,6 @@ func main() {
 }
 
 func handleRequest(ctx context.Context, rdb *redis.Client) error {
-	if err := rdb.Set(ctx, "First value", "value_1", 0).Err(); err != nil {
-		return err
-	}
-	if err := rdb.Set(ctx, "Second value", "value_2", 0).Err(); err != nil {
-		return err
-	}
-
-	var group sync.WaitGroup
-
-	for i := 0; i < 20; i++ {
-		group.Add(1)
-		go func() {
-			defer group.Done()
-			val := rdb.Get(ctx, "Second value").Val()
-			if val != "value_2" {
-				log.Printf("%q != %q", val, "value_2")
-			}
-		}()
-	}
-
-	group.Wait()
-
-	if err := rdb.Del(ctx, "First value").Err(); err != nil {
-		return err
-	}
-	if err := rdb.Del(ctx, "Second value").Err(); err != nil {
-		return err
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }

@@ -3,19 +3,6 @@
 
 package rediscmd
 
-import "unsafe"
+func String(b []byte) string { _ = "STUB: not implemented"; return "" }
 
-// String converts byte slice to string.
-func String(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
-}
-
-// Bytes converts string to byte slice.
-func Bytes(s string) []byte {
-	return *(*[]byte)(unsafe.Pointer(
-		&struct {
-			string
-			Cap int
-		}{s, len(s)},
-	))
-}
+func Bytes(s string) []byte { _ = "STUB: not implemented"; return nil }

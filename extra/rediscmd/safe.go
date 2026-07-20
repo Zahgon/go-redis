@@ -3,10 +3,6 @@
 
 package rediscmd
 
-func String(b []byte) string {
-	return string(b)
-}
+func String(b []byte) string { _ = "STUB: not implemented"; return "" }
 
-func Bytes(s string) []byte {
-	return []byte(s)
-}
+func Bytes(s string) []byte { _ = "STUB: not implemented"; return nil }

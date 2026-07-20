@@ -3,8 +3,6 @@ package redis
 import (
 	"context"
 	"time"
-
-	"github.com/redis/go-redis/v9/internal/hashtag"
 )
 
 type GenericCmdable interface {
@@ -49,219 +47,147 @@ type GenericCmdable interface {
 }
 
 func (c cmdable) Del(ctx context.Context, keys ...string) *IntCmd {
-	args := make([]interface{}, 1+len(keys))
-	args[0] = "del"
-	for i, key := range keys {
-		args[1+i] = key
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Unlink(ctx context.Context, keys ...string) *IntCmd {
-	args := make([]interface{}, 1+len(keys))
-	args[0] = "unlink"
-	for i, key := range keys {
-		args[1+i] = key
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Dump(ctx context.Context, key string) *StringCmd {
-	cmd := NewStringCmd(ctx, "dump", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Exists(ctx context.Context, keys ...string) *IntCmd {
-	args := make([]interface{}, 1+len(keys))
-	args[0] = "exists"
-	for i, key := range keys {
-		args[1+i] = key
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Expire(ctx context.Context, key string, expiration time.Duration) *BoolCmd {
-	return c.expire(ctx, key, expiration, "")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ExpireNX(ctx context.Context, key string, expiration time.Duration) *BoolCmd {
-	return c.expire(ctx, key, expiration, "NX")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ExpireXX(ctx context.Context, key string, expiration time.Duration) *BoolCmd {
-	return c.expire(ctx, key, expiration, "XX")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ExpireGT(ctx context.Context, key string, expiration time.Duration) *BoolCmd {
-	return c.expire(ctx, key, expiration, "GT")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ExpireLT(ctx context.Context, key string, expiration time.Duration) *BoolCmd {
-	return c.expire(ctx, key, expiration, "LT")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) expire(
 	ctx context.Context, key string, expiration time.Duration, mode string,
 ) *BoolCmd {
-	args := make([]interface{}, 3, 4)
-	args[0] = "expire"
-	args[1] = key
-	args[2] = formatSec(ctx, expiration)
-	if mode != "" {
-		args = append(args, mode)
-	}
-
-	cmd := NewBoolCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd {
-	cmd := NewBoolCmd(ctx, "expireat", key, tm.Unix())
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ExpireTime(ctx context.Context, key string) *DurationCmd {
-	cmd := NewDurationCmd(ctx, time.Second, "expiretime", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Keys(ctx context.Context, pattern string) *StringSliceCmd {
-	cmd := NewStringSliceCmd(ctx, "keys", pattern)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Migrate(ctx context.Context, host, port, key string, db int, timeout time.Duration) *StatusCmd {
-	cmd := NewStatusCmd(
-		ctx,
-		"migrate",
-		host,
-		port,
-		key,
-		db,
-		formatMs(ctx, timeout),
-	)
-	cmd.setReadTimeout(timeout)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Move(ctx context.Context, key string, db int) *BoolCmd {
-	cmd := NewBoolCmd(ctx, "move", key, db)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ObjectFreq(ctx context.Context, key string) *IntCmd {
-	cmd := NewIntCmd(ctx, "object", "freq", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ObjectRefCount(ctx context.Context, key string) *IntCmd {
-	cmd := NewIntCmd(ctx, "object", "refcount", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ObjectEncoding(ctx context.Context, key string) *StringCmd {
-	cmd := NewStringCmd(ctx, "object", "encoding", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ObjectIdleTime(ctx context.Context, key string) *DurationCmd {
-	cmd := NewDurationCmd(ctx, time.Second, "object", "idletime", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Persist(ctx context.Context, key string) *BoolCmd {
-	cmd := NewBoolCmd(ctx, "persist", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) PExpire(ctx context.Context, key string, expiration time.Duration) *BoolCmd {
-	cmd := NewBoolCmd(ctx, "pexpire", key, formatMs(ctx, expiration))
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) PExpireAt(ctx context.Context, key string, tm time.Time) *BoolCmd {
-	cmd := NewBoolCmd(
-		ctx,
-		"pexpireat",
-		key,
-		tm.UnixNano()/int64(time.Millisecond),
-	)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) PExpireTime(ctx context.Context, key string) *DurationCmd {
-	cmd := NewDurationCmd(ctx, time.Millisecond, "pexpiretime", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) PTTL(ctx context.Context, key string) *DurationCmd {
-	cmd := NewDurationCmd(ctx, time.Millisecond, "pttl", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (c cmdable) RandomKey(ctx context.Context) *StringCmd {
-	cmd := NewStringCmd(ctx, "randomkey")
-	_ = c(ctx, cmd)
-	return cmd
-}
+func (c cmdable) RandomKey(ctx context.Context) *StringCmd { _ = "STUB: not implemented"; return nil }
 
 func (c cmdable) Rename(ctx context.Context, key, newkey string) *StatusCmd {
-	cmd := NewStatusCmd(ctx, "rename", key, newkey)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) RenameNX(ctx context.Context, key, newkey string) *BoolCmd {
-	cmd := NewBoolCmd(ctx, "renamenx", key, newkey)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Restore(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd {
-	cmd := NewStatusCmd(
-		ctx,
-		"restore",
-		key,
-		formatMs(ctx, ttl),
-		value,
-	)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) RestoreReplace(ctx context.Context, key string, ttl time.Duration, value string) *StatusCmd {
-	cmd := NewStatusCmd(
-		ctx,
-		"restore",
-		key,
-		formatMs(ctx, ttl),
-		value,
-		"replace",
-	)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type Sort struct {
@@ -272,121 +198,54 @@ type Sort struct {
 	Alpha         bool
 }
 
-func (sort *Sort) args(command, key string) []interface{} {
-	args := []interface{}{command, key}
-
-	if sort.By != "" {
-		args = append(args, "by", sort.By)
-	}
-	if sort.Offset != 0 || sort.Count != 0 {
-		args = append(args, "limit", sort.Offset, sort.Count)
-	}
-	for _, get := range sort.Get {
-		args = append(args, "get", get)
-	}
-	if sort.Order != "" {
-		args = append(args, sort.Order)
-	}
-	if sort.Alpha {
-		args = append(args, "alpha")
-	}
-	return args
-}
+func (sort *Sort) args(command, key string) []interface{} { _ = "STUB: not implemented"; return nil }
 
 func (c cmdable) SortRO(ctx context.Context, key string, sort *Sort) *StringSliceCmd {
-	cmd := NewStringSliceCmd(ctx, sort.args("sort_ro", key)...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Sort(ctx context.Context, key string, sort *Sort) *StringSliceCmd {
-	cmd := NewStringSliceCmd(ctx, sort.args("sort", key)...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) SortStore(ctx context.Context, key, store string, sort *Sort) *IntCmd {
-	args := sort.args("sort", key)
-	if store != "" {
-		args = append(args, "store", store)
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) SortInterfaces(ctx context.Context, key string, sort *Sort) *SliceCmd {
-	cmd := NewSliceCmd(ctx, sort.args("sort", key)...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Touch(ctx context.Context, keys ...string) *IntCmd {
-	args := make([]interface{}, len(keys)+1)
-	args[0] = "touch"
-	for i, key := range keys {
-		args[i+1] = key
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) TTL(ctx context.Context, key string) *DurationCmd {
-	cmd := NewDurationCmd(ctx, time.Second, "ttl", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Type(ctx context.Context, key string) *StatusCmd {
-	cmd := NewStatusCmd(ctx, "type", key)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) Copy(ctx context.Context, sourceKey, destKey string, db int, replace bool) *IntCmd {
-	args := []interface{}{"copy", sourceKey, destKey, "DB", db}
-	if replace {
-		args = append(args, "REPLACE")
-	}
-	cmd := NewIntCmd(ctx, args...)
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
-//------------------------------------------------------------------------------
-
 func (c cmdable) Scan(ctx context.Context, cursor uint64, match string, count int64) *ScanCmd {
-	args := []interface{}{"scan", cursor}
-	if match != "" {
-		args = append(args, "match", match)
-	}
-	if count > 0 {
-		args = append(args, "count", count)
-	}
-	cmd := NewScanCmd(ctx, c, args...)
-	if hashtag.Present(match) {
-		cmd.SetFirstKeyPos(3)
-	}
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (c cmdable) ScanType(ctx context.Context, cursor uint64, match string, count int64, keyType string) *ScanCmd {
-	args := []interface{}{"scan", cursor}
-	if match != "" {
-		args = append(args, "match", match)
-	}
-	if count > 0 {
-		args = append(args, "count", count)
-	}
-	if keyType != "" {
-		args = append(args, "type", keyType)
-	}
-	cmd := NewScanCmd(ctx, c, args...)
-	if hashtag.Present(match) {
-		cmd.SetFirstKeyPos(3)
-	}
-	_ = c(ctx, cmd)
-	return cmd
+	_ = "STUB: not implemented"
+	return nil
 }

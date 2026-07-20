@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"strings"
 
 	"github.com/redis/go-redis/v9/internal/routing"
 )
@@ -164,46 +163,18 @@ type commandInfoResolver struct {
 }
 
 func NewCommandInfoResolver(resolveFunc CommandInfoResolveFunc) *commandInfoResolver {
-	return &commandInfoResolver{
-		resolveFunc: resolveFunc,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func NewDefaultCommandPolicyResolver() *commandInfoResolver {
-	return NewCommandInfoResolver(func(ctx context.Context, cmd Cmder) *routing.CommandPolicy {
-		module := "core"
-		command := cmd.Name()
-		cmdParts := strings.Split(command, ".")
-		if len(cmdParts) == 2 {
-			module = cmdParts[0]
-			command = cmdParts[1]
-		}
-
-		if policy, ok := defaultPolicies[module][command]; ok {
-			return policy
-		}
-
-		return nil
-	})
-}
+func NewDefaultCommandPolicyResolver() *commandInfoResolver { _ = "STUB: not implemented"; return nil }
 
 func (r *commandInfoResolver) GetCommandPolicy(ctx context.Context, cmd Cmder) *routing.CommandPolicy {
-	if r.resolveFunc == nil {
-		return nil
-	}
-
-	policy := r.resolveFunc(ctx, cmd)
-	if policy != nil {
-		return policy
-	}
-
-	if r.fallBackResolver != nil {
-		return r.fallBackResolver.GetCommandPolicy(ctx, cmd)
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (r *commandInfoResolver) SetFallbackResolver(fallbackResolver *commandInfoResolver) {
-	r.fallBackResolver = fallbackResolver
+	_ = "STUB: not implemented"
+	return
 }
