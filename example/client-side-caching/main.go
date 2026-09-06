@@ -1,5 +1,3 @@
-// Example: use Redis server-assisted client-side caching with a standalone
-// go-redis client.
 package main
 
 import (
@@ -30,8 +28,6 @@ func main() {
 	})
 	defer cached.Close()
 
-	// Use a separate client to show that a write from another connection
-	// invalidates the cached value.
 	writer := redis.NewClient(&redis.Options{Addr: addr})
 	defer writer.Close()
 
@@ -47,8 +43,8 @@ func main() {
 		log.Fatalf("set initial value: %v", err)
 	}
 
-	first := get(ctx, cached, key)  // Cache miss: fetched from Redis.
-	second := get(ctx, cached, key) // Cache hit: served from local memory.
+	first := get(ctx, cached, key)
+	second := get(ctx, cached, key)
 	stats := cached.CSCStats()
 
 	fmt.Printf("first read: %s\n", first)
@@ -59,8 +55,6 @@ func main() {
 		log.Fatalf("update value: %v", err)
 	}
 
-	// Invalidation notifications are processed asynchronously. Wait until the
-	// cache observes the update rather than relying on a fixed sleep.
 	deadline := time.Now().Add(2 * time.Second)
 	for {
 		value := get(ctx, cached, key)
@@ -76,9 +70,6 @@ func main() {
 }
 
 func get(ctx context.Context, client *redis.Client, key string) string {
-	value, err := client.Get(ctx, key).Result()
-	if err != nil {
-		log.Fatalf("get %q: %v", key, err)
-	}
-	return value
+	_ = "STUB: not implemented"
+	return ""
 }
